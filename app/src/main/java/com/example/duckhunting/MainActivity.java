@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
-        gameView = new GameView(this, size.x, size.y);
+        gameView = new GameView(this, size.x, size.y-statusBarHeight);
         setContentView(gameView);
     }
 }

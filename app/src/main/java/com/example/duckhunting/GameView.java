@@ -30,14 +30,12 @@ public class GameView extends View {
             ducks[i]= BitmapFactory.decodeResource(getResources(),TARGETS[i]);
         float scale = ((float)width/(ducks[0].getWidth()*5));
         duckRect=new Rect(0, 0,width/5,(int)(ducks[0].getHeight()*scale));
-        game = new Game(duckRect,5,0.3f,0.2f);
+        game = new Game(duckRect,0.05f, 20, 0.2f);
         game.setDuckSpeed(width*0.00003f);
         game.setBulletSpeed(width*0.0003f);
         game.setDeltaTime(DELTA_TIME);
-
         game.setHuntingRect( new Rect( 0, 0, width, height ) );
         game.setCannon(new Point(0, height), width/30, width/15, width/50);
-
         paint=new Paint();
         paint.setColor(0xFF000000);
         paint.setAntiAlias(true);
@@ -49,21 +47,23 @@ public class GameView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        // draw cannon
+        //Draw cannon
         canvas.drawCircle(game.getCannonCenter().x, game.getCannonCenter().y, game.getCannonRadius(), paint);
-        // draw cannon barrel
-        canvas.drawLine(game.getCannonCenter().x, game.getCannonCenter().y,
-                game.getCannonCenter().x + game.getBarrelLength() * (float) Math.cos(game.getCannonAngle()),
-                game.getCannonCenter().y - game.getBarrelLength() * (float) Math.sin(game.getCannonAngle()), paint);
-        // draw bullet
-        if (!game.bulletOffScreen()) {
-            canvas.drawCircle(game.getBulletCenter().x, game.getBulletCenter().y, game.getBulletRadius(), paint);
-        }
-        // draw animation duck
-        duckFrame = (duckFrame + 1) % ducks.length;
-        canvas.drawBitmap(ducks[duckFrame], null, game.getDuckRect(), paint);
+        //Draw cannon barrel
+        canvas.drawLine(game.getCannonCenter().x,game.getCannonCenter().y,
+                game.getCannonCenter().x+game.getBarrelLength()*(float)Math.cos(game.getCannonAngle()),
+                game.getCannonCenter().y-game.getBarrelLength()*(float)Math.sin(game.getCannonAngle()),paint);
+        //draw duck
+        duckFrame = ( duckFrame + 1 ) % ducks.length;
+        if (game.isDuckShot()){
+            canvas.drawBitmap( ducks[0], null, game.getDuckRect( ), paint );
+        }else
+            canvas.drawBitmap( ducks[duckFrame], null, game.getDuckRect( ), paint );
+        //draw bullet
+        if (!game.bulletOffScreen())
+            canvas.drawCircle(game.getBulletCenter().x, game.getBulletCenter().y,
+                    game.getBulletRadius(), paint);
     }
-
 }

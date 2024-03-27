@@ -7,21 +7,23 @@ public class GameTimerTask extends TimerTask {
     private GameView gameView;
 
     public GameTimerTask(GameView view){
-        gameView=view;
+        this.gameView=view;
         game = view.getGame();
         game.startDuckFromRightTopHalf();
     }
-    public void run( ) {
-        game.moveDuck( ) ;
-        if( game .bulletOffScreen()){
+    public void run(){
+        game.moveDuck();
+        if (game.bulletOffScreen())
             game.loadBullet();
-        }
-        else if( game.isBulletFired( )) {
+        else if (game.isBulletFired())
             game.moveBullet();
-        }
-        if( game.duckOffScreen( )) {
+        if (game.duckOffScreen()) {
+            game.setDuckShot(false);
             game.startDuckFromRightTopHalf();
-            gameView.postInvalidate();
+        } else if (game.duckHit()) {
+            game.setDuckShot(true);
+            ((MainActivity) gameView.getContext()).playHitSound();
+            game.loadBullet();
         }
         gameView.postInvalidate();
     }
